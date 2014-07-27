@@ -1,0 +1,9 @@
+default:
+    suites:
+        default:
+            paths: ["features/"]
+            contexts: ["bootstrap\\PhpSpecContext"]
+
+    autoload:
+        'bootstrap': %paths.base%/features
+        '': %paths.base%/vendor/phpspec/phpspec/features/bootstrap/Console
