@@ -1,0 +1,17 @@
+{
+    "name": "wouterj/phpspec-closure",
+    "description": "A PHPspec extension to allow better looking spec files",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Wouter J",
+            "email": "wouter@wouterj.nl"
+        }
+    ],
+
+    "require": {
+        "phpspec/phpspec": "2.0.*"
+    },
+
+    "minimum-stability": "dev"
+}
