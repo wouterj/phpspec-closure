@@ -4,40 +4,36 @@ Feature: Using Assertions
     I need to use PHPspec assertions
 
     Background:
-        Given the class file "StringCalculator.php" contains:
+        Given the closure extension is enabled
+
+    Scenario: Using build-in assertions
+        Given the class file "StringCalculator1.php" contains:
             """
-            class StringCalculator
+            <?php
+
+            class StringCalculator1
             {
                 public function add($str)
                 {
                     if (!is_string($str)) throw new \InvalidArgumentException('It\'s a **String**Calculator!');
 
-                    return array_reduce(function ($acc, $i) {
+                    return array_reduce(explode(',', $str), function ($acc, $i) {
                         return $acc += (int) $i;
-                    }, explode(',', $str), 0);
-                }
-
-                public function multiply($str)
-                {
-                    if (!is_string($str)) throw new \InvalidArgumentException('It\'s a **String**Calculator!');
-
-                    return array_reduce(function ($acc, $i) {
-                        return $acc *= (int) $i;
-                    }, explode(',', $str), 0);
+                    }, 0);
                 }
             }
             """
-
-    Scenario: Using build-in assertions
-        Given the spec file "spec/StringCalculator.php" contains:
+        And the spec file "spec/StringCalculator1Spec.php" contains:
             """
-            describe('StringCalculator', function () {
+            <?php
+
+            $describe('StringCalculator', function () use ($it) {
                 
-                it ('adds values seperated by commas', function () {
+                $it ('adds values seperated by commas', function () {
                     $this->add('1,2,3')->shouldBe(6);
                 });
 
-                it ('does only accept strings', function () {
+                $it ('does only accept strings', function () {
                     $this->shouldThrow('InvalidArgumentException')->duringAdd([]);
                 });
 
@@ -47,16 +43,32 @@ Feature: Using Assertions
         Then the suite should pass
 
     Scenario: Using custom matchers
-        Given the spec file "spec/StringCalculator.php" contains:
+        Given the class file "StringCalculator2.php" contains:
             """
-            describe('StringCalculator', function () {
-                matchers(array(
-                    'BeTheMultiplyOf' => function ($subject, $one, $two) {
-                        return $subject === $one * $two;
-                    },
-                ));
+            <?php
 
-                it ('multiplies values seperated by commas', function () {
+            class StringCalculator2
+            {
+                public function multiply($str)
+                {
+                    if (!is_string($str)) throw new \InvalidArgumentException('It\'s a **String**Calculator!');
+
+                    return array_reduce(explode(',', $str), function ($acc, $i) {
+                        return $acc *= (int) $i;
+                    }, 0);
+                }
+            }
+            """
+        And the spec file "spec/StringCalculator2Spec.php" contains:
+            """
+            <?php
+
+            $describe('StringCalculator2', function () use ($it) {
+                $registerMatcher('BeTheMultiplyOf', function ($subject, $one, $two) {
+                    return $subject === $one * $two;
+                });
+
+                $it ('multiplies values seperated by commas', function () {
                     $this->multiply('4,3')->shouldBeTheMultiplyOf(2, 6);
                 });
 

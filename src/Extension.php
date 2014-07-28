@@ -15,5 +15,22 @@ class Extension implements ExtensionInterface
 {
     public function load(ServiceContainer $container)
     {
+        $container->setShared('loader.resource_loader', function ($c) {
+            return new ResourceLoader($c->get('locator.resource_manager'));
+        });
+
+        $container->setShared('runner.example', function ($c) {
+            $runner = new Runner\ExampleRunner(
+                $c->get('event_dispatcher'),
+                $c->get('formatter.presenter')
+            );
+
+            array_map(
+                array($runner, 'registerMaintainer'),
+                $c->getByPrefix('runner.maintainers')
+            );
+
+            return $runner;
+        });
     }
 }

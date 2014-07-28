@@ -48,6 +48,19 @@ class PhpSpecContext implements Context
     }
 
     /**
+     * @Given /^the closure extension is enabled$/
+     */
+    public function theClosureExtensionIsEnabled()
+    {
+        $phpspecyml = <<<YML
+extensions:
+- WouterJ\PhpSpec\ClosureExtension\Extension
+YML;
+
+        file_put_contents($this->workDir.'phpspec.yml', $phpspecyml);
+    }
+
+    /**
      * @When /^(?:|I )run phpspec$/
      */
     public function iRunPhpspec()
@@ -86,9 +99,9 @@ class PhpSpecContext implements Context
     }
 
     /**
-     * @Given /^(?:|the )(?:spec |class )file "(?P<file>[^"]+)" contains:$/
+     * @Given /^(?:|the )(?P<type>spec |class )file "(?P<file>[^"]+)" contains:$/
      */
-    public function theFileContains($file, PyStringNode $string)
+    public function theFileContains($file, $type = 'class', PyStringNode $string)
     {
         $dirname = dirname($file);
         if (!file_exists($dirname)) {
@@ -97,7 +110,9 @@ class PhpSpecContext implements Context
 
         file_put_contents($file, $string->getRaw());
 
-        require_once($file);
+        if (trim($type) === 'class') {
+            require_once($file);
+        }
     }
 
     /**
@@ -138,6 +153,7 @@ class PhpSpecContext implements Context
     public function theSuiteShouldPass()
     {
         $stats = $this->getRunStats();
+        echo $this->applicationTester->getDisplay();
 
         expect($stats['examples'] > 0)->toBe(true);
         expect($stats['examples'])->toBe($stats['passed']);
