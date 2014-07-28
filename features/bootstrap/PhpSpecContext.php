@@ -153,7 +153,6 @@ YML;
     public function theSuiteShouldPass()
     {
         $stats = $this->getRunStats();
-        echo $this->applicationTester->getDisplay();
 
         expect($stats['examples'] > 0)->toBe(true);
         expect($stats['examples'])->toBe($stats['passed']);

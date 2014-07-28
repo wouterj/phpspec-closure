@@ -33,12 +33,10 @@ class ResourceLoader extends PhpSpecResourceLoader
             $objectBehaviour = new DynamicObjectBehaviour();
             $this->resource = $resource;
 
-            $describe = new Structure\Describe(array($this, 'onResourceChanged'));
-            $it = new Structure\It($objectBehaviour, array($this, 'onNewExample'));
-
             $this->loadFile($resource->getSpecFilename(), array(
-                'describe' => $describe,
-                'it' => $it,
+                'describe' => new Structure\Describe(array($this, 'onResourceChanged')),
+                'it' => new Structure\It($objectBehaviour, array($this, 'onNewExample')),
+                'registerMatcher' => new Structure\RegisterMatcher($objectBehaviour),
             ));
 
             $spec = new Node\SpecificationNode($resource->getSrcClassname(), $objectBehaviour, $this->resource);

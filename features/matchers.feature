@@ -55,7 +55,7 @@ Feature: Using Assertions
 
                     return array_reduce(explode(',', $str), function ($acc, $i) {
                         return $acc *= (int) $i;
-                    }, 0);
+                    }, 1);
                 }
             }
             """
@@ -63,8 +63,8 @@ Feature: Using Assertions
             """
             <?php
 
-            $describe('StringCalculator2', function () use ($it) {
-                $registerMatcher('BeTheMultiplyOf', function ($subject, $one, $two) {
+            $describe('StringCalculator2', function () use ($it, $registerMatcher) {
+                $registerMatcher('beTheMultiplyOf', function ($subject, $one, $two) {
                     return $subject === $one * $two;
                 });
 
